@@ -18,9 +18,18 @@ repositories {
 }
 
 dependencies {
-    implementation("io.izzel.taboolib:common:6.0.10-31")
-    implementation("io.izzel.taboolib:common-5:6.0.10-31")
-    implementation("io.izzel.taboolib:module-configuration-shaded:6.0.10-31")
+//    implementation("io.izzel.taboolib:common:6.0.10-98")
+//    implementation("io.izzel.taboolib:common-5:6.0.10-98")
+//    implementation("io.izzel.taboolib:module-configuration-shaded:6.0.10-98")
+
+    // batik
+    implementation("org.apache.xmlgraphics:batik-codec:1.14")
+    implementation("org.apache.xmlgraphics:batik-svg-dom:1.14")
+    implementation("org.apache.xmlgraphics:batik-svggen:1.14")
+    implementation("org.apache.xmlgraphics:batik-transcoder:1.14")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     implementation("net.mamoe:mirai-core:2.12.3")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.31")

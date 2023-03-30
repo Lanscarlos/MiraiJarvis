@@ -1,5 +1,8 @@
 package top.lanscarlos.jarvis
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+
 /**
  * MiraiJarvis
  * top.lanscarlos.jarvis
@@ -8,6 +11,12 @@ package top.lanscarlos.jarvis
  * @since 2022-12-19 21:31
  */
 object Context {
-    val config get() = MiraiJarvis.config
-    val jarvis get() = MiraiJarvis.jarvis
+
+//    val config by lazy {
+//        Configuration.loadFromFile(releaseResourceFile("config.yml", false))
+//    }
+
+    val scope by lazy {
+        CoroutineScope(Dispatchers.Default)
+    }
 }

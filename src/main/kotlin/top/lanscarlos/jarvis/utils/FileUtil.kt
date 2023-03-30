@@ -1,6 +1,5 @@
 package top.lanscarlos.jarvis.utils
 
-import taboolib.common.io.newFile
 import java.io.File
 import top.lanscarlos.jarvis.MiraiJarvis
 
@@ -37,7 +36,7 @@ fun releaseResourceFile(path: String, replace: Boolean): File {
     if (file.exists() && !replace) {
         return file
     }
-    newFile(file).writeBytes(MiraiJarvis.getResourceAsStream(path)?.readBytes() ?: error("resource not found: $path"))
+//    newFile(file).writeBytes(MiraiJarvis.getResourceAsStream(path)?.readBytes() ?: error("resource not found: $path"))
     return file
 }
 

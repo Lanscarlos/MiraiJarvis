@@ -5,6 +5,7 @@ import net.mamoe.mirai.message.data.Image.Key.queryUrl
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.io.*
+import java.util.concurrent.TimeUnit
 
 /**
  * MiraiJarvis
@@ -14,18 +15,21 @@ import java.io.*
  * @since 2022-12-19 17:09
  */
 
-val okClient by lazy {
-    OkHttpClient()
+val httpClient by lazy {
+    OkHttpClient.Builder()
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .build()
 }
 
 fun HttpUrl.callUnsafe(): Response {
     val request = Request.Builder().url(this).build()
-    return okClient.newCall(request).execute()
+    return httpClient.newCall(request).execute()
 }
 
 fun HttpUrl.call(onResponse: (Response?) -> Unit) {
     val request = Request.Builder().url(this).build()
-    okClient.newCall(request).enqueue(object : Callback {
+    httpClient.newCall(request).enqueue(object : Callback {
         override fun onFailure(call: Call, e: IOException) {
             onResponse(null)
         }
@@ -36,7 +40,7 @@ fun HttpUrl.call(onResponse: (Response?) -> Unit) {
 }
 
 /**
- * 下载文件，文件名为其文件本体的 sha-1 签名
+ * 下载图片文件，文件名为其文件本体的 sha-1 签名
  * @return 图片访问是否成功
  * */
 suspend fun Image.download(): Boolean {
