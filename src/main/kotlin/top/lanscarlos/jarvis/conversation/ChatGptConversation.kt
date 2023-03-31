@@ -31,8 +31,6 @@ object ChatGptConversation : SimpleListenerHost() {
 
     @EventHandler
     suspend fun e(e: GroupMessageEvent) {
-        if (e.group.id != 250127377L) return
-
         process(e.message)?.let {
             e.group.sendMessage(it)
         }

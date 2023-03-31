@@ -36,8 +36,6 @@ object MetricsConversation : SimpleListenerHost() {
 
     @EventHandler
     suspend fun e(e: GroupMessageEvent) {
-        if (e.group.id != 250127377L) return
-
         process(e.group, e.message)
     }
 
