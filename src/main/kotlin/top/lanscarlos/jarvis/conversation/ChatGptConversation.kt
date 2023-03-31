@@ -1,17 +1,15 @@
 package top.lanscarlos.jarvis.conversation
 
-import net.mamoe.mirai.event.EventHandler
-import net.mamoe.mirai.event.SimpleListenerHost
 import net.mamoe.mirai.event.events.FriendMessageEvent
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.message.data.MessageChain
 import net.mamoe.mirai.message.data.MessageSource.Key.quote
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import top.lanscarlos.jarvis.channel.ChannelHandler
 import top.lanscarlos.jarvis.utils.toJson
 import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.CoroutineContext
 
 /**
  * MiraiJarvis
@@ -20,21 +18,11 @@ import kotlin.coroutines.CoroutineContext
  * @author Lanscarlos
  * @since 2023-03-30 13:30
  */
-object ChatGptConversation : SimpleListenerHost() {
+object ChatGptConversation : ChannelHandler {
 
-    @EventHandler
-    suspend fun e(e: FriendMessageEvent) {
-        process(e.message)?.let {
-            e.friend.sendMessage(it)
-        }
-    }
+    override val priority: Int = ChannelHandler.PRIORITY_LOWEST
 
-    @EventHandler
-    suspend fun e(e: GroupMessageEvent) {
-        process(e.message)?.let {
-            e.group.sendMessage(it)
-        }
-    }
+    override val pattern: Regex = "# .*".toRegex()
 
     val httpClient by lazy {
         OkHttpClient.Builder()
@@ -45,13 +33,9 @@ object ChatGptConversation : SimpleListenerHost() {
 
     const val base = "https://api.faithl.com/chatgpt"
 
-    fun process(message: MessageChain): MessageChain? {
-        val msg = message.contentToString()
-
-        // 过滤非对话信息
-        if (msg[0] != '#') return null
+    fun process(rawMessage: String, message: MessageChain): MessageChain {
         val request = Request.Builder()
-            .url("$base?q=${URLEncoder.encode(msg.substring(1).trim(), "UTF-8")}")
+            .url("$base?q=${URLEncoder.encode(rawMessage.substring(1).trim(), "UTF-8")}")
             .build()
         val response = httpClient.newCall(request).execute().body?.string()?.toJson()
 
@@ -62,7 +46,11 @@ object ChatGptConversation : SimpleListenerHost() {
         }
     }
 
-    override fun handleException(context: CoroutineContext, exception: Throwable) {
-        exception.printStackTrace()
+    override suspend fun handle(event: FriendMessageEvent, rawMessage: String) {
+        event.friend.sendMessage(process(rawMessage, event.message))
+    }
+
+    override suspend fun handle(event: GroupMessageEvent, rawMessage: String) {
+        event.group.sendMessage(process(rawMessage, event.message))
     }
 }

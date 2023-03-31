@@ -4,8 +4,11 @@ import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
 import net.mamoe.mirai.event.GlobalEventChannel
 import net.mamoe.mirai.event.registerTo
+import top.lanscarlos.jarvis.channel.ConversationChannel
 import top.lanscarlos.jarvis.conversation.ChatGptConversation
+import top.lanscarlos.jarvis.conversation.GroupListenConversation
 import top.lanscarlos.jarvis.conversation.MetricsConversation
+import top.lanscarlos.jarvis.conversation.ReloadCommandConversation
 import top.lanscarlos.jarvis.utils.info
 
 /**
@@ -28,11 +31,19 @@ object MiraiJarvis : KotlinPlugin(
     const val pluginName = "MiraiJarvis"
 
     override fun onEnable() {
-        ChatGptConversation.registerTo(GlobalEventChannel)
-        MetricsConversation.registerTo(GlobalEventChannel)
 
-//        ExampleConversation.registerTo(GlobalEventChannel)
+        // 初始化
+        Context
 
+        // 注册会话
+        ConversationChannel.register(ChatGptConversation)
+        ConversationChannel.register(MetricsConversation)
+        ConversationChannel.register(GroupListenConversation)
+        ConversationChannel.register(ReloadCommandConversation)
+
+        // 注册事件
+        ConversationChannel.sortPipeline()
+        ConversationChannel.registerTo(GlobalEventChannel)
         info("Plugin loaded. XD")
     }
 }

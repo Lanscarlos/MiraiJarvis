@@ -1,4 +1,10 @@
 
-account-setting:
-  user: -1
-  password: 'Undefined'
+owner-setting:
+  account: 123456789
+
+# 群聊设置
+group-setting:
+  # 监听的群聊
+  listen:
+    - 123456789
+    - 987654321
